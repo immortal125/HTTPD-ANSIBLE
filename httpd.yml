@@ -1,0 +1,28 @@
+---
+- hosts: 192.168.1.43
+  tasks:
+          - package:
+                  name: "httpd"
+                  state: present
+          - file:
+                  state: directory
+                  path: "/var/www/reddy"
+
+          - copy:
+                  content: " Welcome "
+                  dest: "/var/www/reddy/httpd.html"
+          - copy:
+                  src: "/root/httpd-ansi/port.conf"
+                  dest: "/etc/httpd/conf.d/"
+            notify: service restart
+  handlers:
+          - name: service restart         
+            service:
+                  name: "httpd"
+                  state: restarted
+          - firewalld:
+                  port: 8443/tcp
+                  state: enabled
+                  permanent: yes
+                  immediate: yes
+                  
